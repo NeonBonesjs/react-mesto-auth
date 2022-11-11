@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import logo from "../image/logo.svg";
-import { Link } from "react-router-dom";
 export default function Header(props) {
   const[active, setActive] = useState(false);
   const handleButton = () => {
