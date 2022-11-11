@@ -242,7 +242,7 @@ class App extends React.Component {
                 />
                 
               </Route> */}
-              <ProtectedRoute exact path="/"
+              <ProtectedRoute exact path="/react-mesto-auth"
                 loggedIn={this.state.loggedIn}
                 component={Main}
                 onEditAvatar={this.handleEditAvatarClick}

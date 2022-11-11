@@ -23,7 +23,7 @@ export default function Register(props){
 
   }
   if(props.loggedIn){
-    return(<Redirect to="/" />)
+    return(<Redirect to="/react-mesto-auth" />)
   }
   else if(props.isLoginPage){
     return(<Redirect to='/sign-in' />)
