@@ -2,7 +2,7 @@ import React from "react";
 // import { Link } from "react-router-dom";
 export default function FormPage(props) {
   return (
-    <>
+    
       <form className="form-sing" onSubmit={props.onSubmit}>
         <h2 className="form-sing__title">{props.title}</h2>
         <input
@@ -30,6 +30,6 @@ export default function FormPage(props) {
         </button>
         {props.underButton}
       </form>
-    </>
+    
   );
 }
