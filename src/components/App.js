@@ -1,6 +1,6 @@
 // import './App.css';
 import React from "react";
-import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import Header from "./Header";
 import Main from "./Main";
 import api from "../utils/api.js";
@@ -12,7 +12,7 @@ import { currentUserContext } from "../context/CurrentUserContext";
 import Register from "./Register";
 import Login from "./Login";
 import auth from "../utils/auth";
-import ProtectedRoute from './ProtectedRoute';
+import ProtectedRoute from "./ProtectedRoute";
 
 class App extends React.Component {
   constructor(props) {
@@ -27,7 +27,7 @@ class App extends React.Component {
       cards: [],
       loggedIn: false,
       isSucsess: false,
-      email: '',
+      email: "",
       isLoginPage: true,
     };
   }
@@ -81,7 +81,8 @@ class App extends React.Component {
   };
 
   getCards = () => {
-    api
+    if(this.state.loggedIn)
+    {api
       .getInitialCard()
 
       .then((res) => {
@@ -89,8 +90,18 @@ class App extends React.Component {
           cards: res,
         });
       })
-      .catch((err) => console.log(`Error: ${err}`));
+      .catch((err) => console.log(`Error: ${err}`));}
   };
+
+  getUserInfo = () => {
+    if(this.state.loggedIn)
+    {api
+      .getUserInfo()
+      .then((res) => {
+        this.setState({ currentUser: res });
+      })
+      .catch((err) => console.log(`Error: ${err}`));}
+  }
 
   handleCardLike = (card) => {
     const isLiked = card.likes.some(
@@ -121,7 +132,6 @@ class App extends React.Component {
       .catch((err) => console.log(`Error: ${err}`));
   };
 
-
   handleAddPlaceSubmit = (card) => {
     api
       .addNewCard(card)
@@ -131,7 +141,6 @@ class App extends React.Component {
       .then((res) => this.closeAllPopup())
       .catch((err) => console.log(`Error: ${err}`));
   };
-
 
   handleRegisterUser = (email, pass) => {
     auth
@@ -161,7 +170,7 @@ class App extends React.Component {
       })
       .then(() => {
         this.setState({ loggedIn: true });
-        this.setState({isLoginPage: false});
+        this.setState({ isLoginPage: false });
       })
       .catch(() => {
         this.setState({ isSucsess: false });
@@ -170,65 +179,71 @@ class App extends React.Component {
   };
 
   handleButtonClick = () => {
-    if(this.state.loggedIn){
-       localStorage.removeItem('token')
-       this.setState({loggedIn: false})
-       this.setState({email: ''})
-       this.setState({isLoginPage: true})
-    }
-    else{
-      if(this.state.isLoginPage){
-        this.setState({isLoginPage: false})
-      }
-      else{
-        this.setState({isLoginPage: true})
+    if (this.state.loggedIn) {
+      localStorage.removeItem("token");
+      this.setState({ loggedIn: false });
+      this.setState({ email: "" });
+      this.setState({ isLoginPage: true });
+    } else {
+      if (this.state.isLoginPage) {
+        this.setState({ isLoginPage: false });
+      } else {
+        this.setState({ isLoginPage: true });
       }
     }
-  }
+  };
 
-
-  
   tokenCheck = () => {
-    const jwt = localStorage.getItem('token')
-    if(jwt){
-      auth.getUserEmail(jwt)
+    const jwt = localStorage.getItem("token");
+    if (jwt) {
+      auth
+        .getUserEmail(jwt)
         .then((res) => {
-          this.setState({email: res.data.email})
+          this.setState({ email: res.data.email });
         })
         .then(() => {
           this.setState({ loggedIn: true });
-          this.setState({isLoginPage: false});
+          this.setState({ isLoginPage: false });
         })
+        .catch((err) => console.log(`Error: ${err}`));
     }
-  }
-
+  };
 
   componentDidMount() {
-    api
-      .getUserInfo()
-      .then((res) => {
-        this.setState({ currentUser: res });
-      })
-      .catch((err) => console.log(`Error: ${err}`));
-    this.getCards();
     this.tokenCheck();
   }
 
-  
- 
 
+
+  componentDidUpdate(prevProps, prevState) {
+    if(this.state.loggedIn !== prevState.loggedIn){
+    this.getUserInfo();
+    this.getCards();
+    }
+  }
+  // shouldComponentUpdate(nextProps, nextState){
+  //   if(nextState.loggedIn !== true){
+  //     return false
+  //   }
+  // }
 
   render() {
     return (
       <currentUserContext.Provider value={this.state.currentUser}>
         <div className="root">
           <div className="page root__page">
-          <Header
-                  button={this.state.loggedIn ? 'Выйти' : this.state.isLoginPage ? 'Регистрация' : 'Войти'}
-                  email={this.state.email}
-                  clickButton={this.handleButtonClick}
-                  loggedIn={this.state.loggedIn}
-                />
+            <Header
+              button={
+                this.state.loggedIn
+                  ? "Выйти"
+                  : this.state.isLoginPage
+                  ? "Регистрация"
+                  : "Войти"
+              }
+              email={this.state.email}
+              clickButton={this.handleButtonClick}
+              loggedIn={this.state.loggedIn}
+            />
             <Switch>
               {/* <Route exact path="/">
                 <Main
@@ -242,7 +257,9 @@ class App extends React.Component {
                 />
                 
               </Route> */}
-              <ProtectedRoute exact path="/react-mesto-auth"
+              <ProtectedRoute
+                exact
+                path="/react-mesto-auth"
                 loggedIn={this.state.loggedIn}
                 component={Main}
                 onEditAvatar={this.handleEditAvatarClick}
@@ -283,32 +300,26 @@ class App extends React.Component {
               </Route>
             </Switch>
             <EditProfilePopup
-                  isOpen={
-                    this.state.isEditProfilePopupOpen ? "popup_active" : ""
-                  }
-                  onClose={this.closeAllPopup}
-                  onUpdateUser={this.handleUpdateUser}
-                />
-                <AddPlacePopup
-                  isOpen={this.state.isAddPlacePopupOpen ? "popup_active" : ""}
-                  onClose={this.closeAllPopup}
-                  onAddPlace={this.handleAddPlaceSubmit}
-                  cards={this.state.cards}
-                />
-                <EditAvatarPopup
-                  isOpen={
-                    this.state.isEditAvatarPopupOpen ? "popup_active" : ""
-                  }
-                  onClose={this.closeAllPopup}
-                  onUpdateAvatar={this.handleUpdateAvatar}
-                />
-                <ImagePopup
-                  card={this.state.selectedCard}
-                  isOpen={
-                    this.state.selectedCard === null ? "" : "popup_active"
-                  }
-                  onClose={this.closeAllPopup}
-                />
+              isOpen={this.state.isEditProfilePopupOpen ? "popup_active" : ""}
+              onClose={this.closeAllPopup}
+              onUpdateUser={this.handleUpdateUser}
+            />
+            <AddPlacePopup
+              isOpen={this.state.isAddPlacePopupOpen ? "popup_active" : ""}
+              onClose={this.closeAllPopup}
+              onAddPlace={this.handleAddPlaceSubmit}
+              cards={this.state.cards}
+            />
+            <EditAvatarPopup
+              isOpen={this.state.isEditAvatarPopupOpen ? "popup_active" : ""}
+              onClose={this.closeAllPopup}
+              onUpdateAvatar={this.handleUpdateAvatar}
+            />
+            <ImagePopup
+              card={this.state.selectedCard}
+              isOpen={this.state.selectedCard === null ? "" : "popup_active"}
+              onClose={this.closeAllPopup}
+            />
           </div>
         </div>
       </currentUserContext.Provider>

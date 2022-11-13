@@ -1,14 +1,13 @@
 import React from "react";
 import { useState } from "react";
-import Header from "./Header";
 import FormPage from "./FormPage";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 // import auth from "../utils/auth";
 import InfoTooltip from "./InfoTooltip";
 
-export default function Register(props){
-  const [email, setEmail] = useState()
-  const [pass, setPass] = useState()
+export default function Register(props) {
+  const [email, setEmail] = useState();
+  const [pass, setPass] = useState();
   function handleChangeEmail(e) {
     setEmail(e.target.value);
   }
@@ -17,24 +16,39 @@ export default function Register(props){
     setPass(e.target.value);
   }
 
-  function handleSubmit(e){
-    e.preventDefault()
-    props.onRegisterUser(email, pass)
-
+  function handleSubmit(e) {
+    e.preventDefault();
+    props.onRegisterUser(email, pass);
   }
-  if(props.loggedIn){
-    return(<Redirect to="/react-mesto-auth" />)
-  }
-  else if(props.isLoginPage){
-    return(<Redirect to='/sign-in' />)
+  if (props.loggedIn) {
+    return <Redirect to="/react-mesto-auth" />;
+  } else if (props.isLoginPage) {
+    return <Redirect to="/sign-in" />;
   }
 
-  return(
+  return (
     <div className="root">
       <div className="page root__page">
-        <FormPage title='Регистрация' button='Зарегистрироваться' underButton={<p onClick={props.clickButton} className="form-sign__under-button" >Уже зарегистрированы? Войти</p>} inputValue1={email || ''} inputOnChange1={handleChangeEmail} inputValue2={pass || ''} inputOnChange2={handleChangePass} onSubmit={handleSubmit}/>
-        <InfoTooltip isOpen={props.isOpen} onClose={props.onClose}  isSucsess={props.isSucsess}/> 
+        <FormPage
+          title="Регистрация"
+          button="Зарегистрироваться"
+          underButton={
+            <p onClick={props.clickButton} className="form-sign__under-button">
+              Уже зарегистрированы? Войти
+            </p>
+          }
+          inputValue1={email || ""}
+          inputOnChange1={handleChangeEmail}
+          inputValue2={pass || ""}
+          inputOnChange2={handleChangePass}
+          onSubmit={handleSubmit}
+        />
+        <InfoTooltip
+          isOpen={props.isOpen}
+          onClose={props.onClose}
+          isSucsess={props.isSucsess}
+        />
       </div>
-    </div>  
-  )
+    </div>
+  );
 }
