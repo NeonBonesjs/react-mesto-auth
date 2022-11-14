@@ -81,27 +81,29 @@ class App extends React.Component {
   };
 
   getCards = () => {
-    if(this.state.loggedIn)
-    {api
-      .getInitialCard()
+    if (this.state.loggedIn) {
+      api
+        .getInitialCard()
 
-      .then((res) => {
-        this.setState({
-          cards: res,
-        });
-      })
-      .catch((err) => console.log(`Error: ${err}`));}
+        .then((res) => {
+          this.setState({
+            cards: res,
+          });
+        })
+        .catch((err) => console.log(`Error: ${err}`));
+    }
   };
 
   getUserInfo = () => {
-    if(this.state.loggedIn)
-    {api
-      .getUserInfo()
-      .then((res) => {
-        this.setState({ currentUser: res });
-      })
-      .catch((err) => console.log(`Error: ${err}`));}
-  }
+    if (this.state.loggedIn) {
+      api
+        .getUserInfo()
+        .then((res) => {
+          this.setState({ currentUser: res });
+        })
+        .catch((err) => console.log(`Error: ${err}`));
+    }
+  };
 
   handleCardLike = (card) => {
     const isLiked = card.likes.some(
@@ -213,12 +215,10 @@ class App extends React.Component {
     this.tokenCheck();
   }
 
-
-
   componentDidUpdate(prevProps, prevState) {
-    if(this.state.loggedIn !== prevState.loggedIn){
-    this.getUserInfo();
-    this.getCards();
+    if (this.state.loggedIn !== prevState.loggedIn) {
+      this.getUserInfo();
+      this.getCards();
     }
   }
   // shouldComponentUpdate(nextProps, nextState){
