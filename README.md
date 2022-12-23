@@ -29,7 +29,7 @@
 Скопируйте проект на компьютер:
 
 ```
-git clone https://github.com/Lod55/mesto-react.git
+git clone git@github.com:NeonBonesjs/react-mesto-auth.git
 ```
 
 Установите зависимости:
